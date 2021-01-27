@@ -13,6 +13,7 @@ RUN groupadd -g 64 -r condor && \
 RUN yum install -y --enablerepo=osg-testing \
                    --enablerepo=osg-upcoming-testing \
                    osg-ce-bosco \
+                   htcondor-ce-view \
                    git \
                    openssh-clients \
                    sudo \
@@ -21,9 +22,6 @@ RUN yum install -y --enablerepo=osg-testing \
                    perl-LWP-Protocol-https \
                    # ^^^ for fetch-crl, in the rare case that the CA forces HTTPS
                    patch && \
-   # Separate CE View installation to work around Yum depsolving fail
-   yum install -y --enablerepo=osg-testing \
-                   htcondor-ce-view && \
     yum clean all && \
     rm -rf /var/cache/yum/
 
