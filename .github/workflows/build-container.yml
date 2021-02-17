@@ -31,14 +31,6 @@ jobs:
         path: /tmp/.buildx-cache
         key: base-${{ matrix.repo }}-buildx-${{ github.sha }}
 
-    - name: Generate tag list
-      id: generate-tag-list
-      env:
-        REPO: ${{ matrix.repo }}
-      run: |
-        docker_repo=${GITHUB_REPOSITORY/opensciencegrid\/docker-/opensciencegrid/}
-        echo "::set-output name=taglist::$docker_repo:$REPO"
-
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
@@ -46,9 +38,8 @@ jobs:
       uses: docker/build-push-action@v2.2.2
       with:
         build-args: BASE_YUM_REPO=${{ matrix.repo }}
-        tags: "${{ steps.generate-tag-list.outputs.taglist }}"
-        context: base
-        cache-to: type=local,dest=/tmp/.buildx-cache
+        target: base
+        cache-to: type=local,mode=max,dest=/tmp/.buildx-cache
 
   child-image-builds:
     name: ${{ matrix.image }}:${{ matrix.repo }} image build
@@ -96,5 +87,5 @@ jobs:
         push: True
         build-args: BASE_YUM_REPO=${{ matrix.repo }}
         tags: "${{ steps.generate-tag-list.outputs.taglist }}"
-        context: ${{ matrix.image }}
+        target: ${{ matrix.image }}
         cache-from: type=local,src=/tmp/.buildx-cache
