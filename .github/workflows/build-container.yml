@@ -1,12 +1,6 @@
 name: Build container images
 
-on:
-  push:
-    branches:
-      - master
-  repository_dispatch:
-    types:
-      - dispatch-build
+on: [push]
 
 jobs:
   make-date-tag:
