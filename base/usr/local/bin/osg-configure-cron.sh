@@ -19,8 +19,8 @@ staging_config_dir=$(mktemp -d)
 rsync -a "$config_dir/" "$staging_config_dir"
 rsync -a "$configmap_config_dir/" "$staging_config_dir"
 
-config_checksum=$(sha256sum $config_dir/*)
-staging_config_checksum=$(sha256sum $staging_config_dir/*)
+config_checksum=$(sha256sum $config_dir/* | cut -d ' ' -f1 | sha256sum)
+staging_config_checksum=$(sha256sum $staging_config_dir/* | cut -d ' ' -f1 | sha256sum)
 
 if [[ $staging_config_checksum == "$config_checksum" ]]; then
     echoerr "No changes detected in $configmap_config_dir, exiting."
